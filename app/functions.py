@@ -8,6 +8,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.action_chains import ActionChains
 
+from .snippet import SYNONYMS_EXCLUDE, TRANSLATION_EXCLUDE, DEFINITIONS_EXCLUDE
+
 def initialize_driver():
     options = Options()
     options.add_argument("--headless")
@@ -45,6 +47,16 @@ def extract_page_text(driver):
     page_text = driver.find_element(By.TAG_NAME, "body").text
     return page_text
 
+def extract_html_text(driver):
+    try:
+        page_source = driver.page_source
+        text_with_commas = re.sub(r'</span></li>', ',', page_source)    
+        clean_text = re.sub(r'<[^>]+>', '', text_with_commas).split(',')
+        return clean_text
+    except Exception as e:
+        print(f"Error extracting page text: {e}")
+        return ""
+
 def highlight_input_text(driver, word):
     try:
         input_element = driver.find_element(By.XPATH, "//input[@aria-label='Source text']")
@@ -63,7 +75,7 @@ def save_screenshot(driver, filename):
     except Exception as e:
         print(f"Error saving screenshot: {e}")
 
-def process_text(page_text, word):
+def process_text(page_text, html_text, word):
     translations = []
     definitions = []
     synonyms = []
@@ -82,6 +94,8 @@ def process_text(page_text, word):
         translations.extend([line.strip() for line in translation_section.split("\n") if line.strip() and not line.startswith(("Noun", "Translation"))])
     except IndexError:
         print("Error processing translation section")
+
+    translations = [item for item in translations if not any(phrase in item for phrase in TRANSLATION_EXCLUDE)]
     
     # Extract definitions section
     try:
@@ -93,26 +107,29 @@ def process_text(page_text, word):
 
         for line in lines:
             if skip_next:
-                parts = line.strip().split()
-                i = 0
-                while i < len(parts):
-                    if i < len(parts) - 1 and parts[i + 1] in ["with", "against", "of"]:
-                        synonyms.append(f"{parts[i]} {parts[i + 1]}")
-                        i += 2
-                    else:
-                        synonyms.append(parts[i])
-                        i += 1
-                skip_next = False
-                continue
+                synonyms.append(line)
+                skip_next = False  # Reset flag after adding the line
 
             if "Synonyms" in line:
                 skip_next = True
-                continue
 
-            if line.strip() and line.endswith('.') and not line[0].isdigit() and line.strip() not in ["INFORMAL", "Verb", "NAUTICAL", "Abbreviation", "MEDICINE", "Fewer definitions"]:
+            if line.strip() and line.endswith('.') and not line[0].isdigit() and line.strip() not in DEFINITIONS_EXCLUDE:
                 definitions.append(line.strip())
     except IndexError:
         print("Error processing definitions section")
+
+    #Extract synonyms section
+    synonyms_one_string = ' '.join(synonyms).split()
+    synonyms = []
+    for item in synonyms_one_string:
+        for item_html in html_text:
+            if item in item_html and item_html[-1] == ' ':
+                item_html = item_html.strip()
+                if 'Synonyms:' in item_html:
+                    item_html = item_html.split('Synonyms:')[-1]
+                if item_html not in SYNONYMS_EXCLUDE:
+                    synonyms.append(item_html)
+                    break
     
     # Extract examples section
     try:
