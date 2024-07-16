@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Query
 from typing import Optional, List
 
 from .models import Word
-from .schemas import WordCreate, WordResponse
+from .schemas import WordResponse
 from .crud import get_word, create_word, get_words, delete_word as delete_word_from_db
 from .scraper import scrape_word
 from .database import connect_to_mongo, close_mongo_connection

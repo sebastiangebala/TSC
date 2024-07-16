@@ -1,7 +1,6 @@
-SYNONYMS_EXCLUDE = ["periodicReportingRateMillis:  60000.0"] #tbc
-
 TRANSLATION_EXCLUDE = ['Learn more', 
-                       'See dictionary'] #tbc
+                       'See dictionary',
+                       'Adjective'] #tbc
 
 DEFINITIONS_EXCLUDE = ["INFORMAL", 
                        "Verb", 

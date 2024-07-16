@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.action_chains import ActionChains
 
-from .snippet import SYNONYMS_EXCLUDE, TRANSLATION_EXCLUDE, DEFINITIONS_EXCLUDE
+from .snippet import TRANSLATION_EXCLUDE, DEFINITIONS_EXCLUDE
 
 def initialize_driver():
     options = Options()
@@ -118,7 +118,7 @@ def process_text(page_text, html_text, word):
     except IndexError:
         print("Error processing definitions section")
 
-    #Extract synonyms section
+    # Extract synonyms section
     synonyms_one_string = ' '.join(synonyms).split()
     synonyms = []
     for item in synonyms_one_string:
@@ -127,7 +127,7 @@ def process_text(page_text, html_text, word):
                 item_html = item_html.strip()
                 if 'Synonyms:' in item_html:
                     item_html = item_html.split('Synonyms:')[-1]
-                if item_html not in SYNONYMS_EXCLUDE:
+                if ':  ' not in item_html:
                     synonyms.append(item_html)
                     break
     
