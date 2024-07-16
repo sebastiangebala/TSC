@@ -62,42 +62,42 @@ Open your browser and navigate to:
 ## Known Flaws and Possible Improvements
 While the current implementation of the Translation Service Challenge fulfills the primary requirements, there are some known areas for improvement and potential flaws that should be addressed in future iterations:
 
-# 1. Error Handling:
+## 1. Error Handling:
 
 Currently, error handling is basic. Adding more comprehensive error handling can improve the robustness of the application. For example, handling specific HTTP errors from the Google Translate API, database connectivity issues, and input validation errors.
 
-# 2. Database Optimization:
+## 2. Database Optimization:
 
 Using a NoSQL database provides flexibility, but the current schema might not be optimized for all use cases. Reviewing and optimizing the database schema and indexing strategies can improve performance, especially for large datasets.
 
-# 3. API Rate Limiting:
+## 3. API Rate Limiting:
 
 Implementing rate limiting can prevent abuse of the API. This is particularly important when interacting with external services like Google Translate to avoid hitting rate limits.
 
-# 4. Testing:
+## 4. Testing:
 
 Although basic tests might be in place, increasing the test coverage, including unit tests, integration tests, and end-to-end tests, can ensure the reliability of the application. Automated testing frameworks can be integrated into the CI/CD pipeline.
 
-# 5. Security:
+## 5. Security:
 
 While authentication is not required as per the challenge, adding optional authentication mechanisms can be beneficial for real-world applications. Securing endpoints and sensitive data should be considered.
 
-# 6. Documentation:
+## 6. Documentation:
 
 Enhancing documentation with detailed API endpoint descriptions, example requests/responses, and setup instructions can make it easier for developers to understand and use the service.
 
-# 7. Logging and Monitoring:
+## 7. Logging and Monitoring:
 
 Implementing logging and monitoring can help in tracking the application's performance and diagnosing issues. Tools like Prometheus, Grafana, and ELK stack can be integrated for this purpose.
 
-# 8. Deployment and Scalability:
+## 8. Deployment and Scalability:
 
 While Docker and Docker Compose are used for containerization, further work on orchestration using Kubernetes can help in scaling the application more efficiently. Additionally, optimizing the Dockerfile and docker-compose.yml for production environments is recommended.
 
-# 9. Fallback Mechanism:
+## 9. Fallback Mechanism:
 
 The current fallback to Google Translate when a word is not found in the database is a good start. However, adding a caching layer can reduce latency and the number of requests to the external API.
 
-# 10. User Experience:
+## 10. User Experience:
 
 Improving the API's user experience by providing more informative error messages, consistent responses, and additional metadata can enhance usability.
